@@ -11,9 +11,19 @@ val Start = state(Interaction) {
                 {   furhat.say("Hi there") },
                 {   furhat.say("Oh, hello there") }
         )
-        furhat.say("I'm selling some fruit here!")
+        furhat.say("Can you teach me how to cook Pizza?")
+    }
 
-        goto(TakingOrder)
+    onResponse<Yes> {
+        furhat.say { "Great!" }
+
+        goto(Ingredients)
+    }
+}
+
+val Ingredients = state(Interaction) {
+    onEntry {
+        furhat.say { "What ingredients do I need?" }
     }
 }
 
