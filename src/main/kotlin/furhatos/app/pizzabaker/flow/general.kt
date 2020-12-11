@@ -42,4 +42,13 @@ val Interaction: State = state {
         furhat.glance(it)
     }
 
+    onButton("Not understanding") {
+        random(
+                { furhat.say("Could you repeat?")},
+                { furhat.say("Sorry, I didn't get it")},
+                { furhat.say("Pardon?")}
+        )
+    }
+
+
 }

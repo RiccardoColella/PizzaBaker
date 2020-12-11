@@ -14,8 +14,12 @@ val Start = state(Interaction) {
         furhat.say("Can you teach me how to cook Pizza?")
     }
 
+    onButton("For example"){
+        furhat.say("Button 1 just pressed")
+    }
+
     onResponse<Yes> {
-        furhat.say { "Great!" }
+        furhat.say("Great!" )
 
         goto(Ingredients)
     }
@@ -23,7 +27,7 @@ val Start = state(Interaction) {
 
 val Ingredients = state(Interaction) {
     onEntry {
-        furhat.say { "What ingredients do I need?" }
+        furhat.say("What ingredients do I need?")
     }
 }
 
