@@ -50,5 +50,14 @@ val Interaction: State = state {
         )
     }
 
+    onButton("Understood. Then?") {
+        random(
+                { furhat.say("Ok, got it. Then?") },
+                { furhat.say("Great. What's next?") },
+                { furhat.say("Mmm. Ok...")},
+                { furhat.say("I'm writing it. What's the following step?")}
+        )
+    }
+
 
 }

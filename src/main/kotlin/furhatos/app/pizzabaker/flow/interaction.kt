@@ -3,6 +3,7 @@ package furhatos.app.pizzabaker.flow
 import furhatos.app.pizzabaker.nlu.*
 import furhatos.app.pizzabaker.order
 import furhatos.flow.kotlin.*
+import furhatos.nlu.ListEntity
 import furhatos.nlu.common.*
 
 val Start = state(Interaction) {
@@ -14,8 +15,10 @@ val Start = state(Interaction) {
         furhat.say("Can you teach me how to cook Pizza?")
     }
 
-    onButton("For example"){
-        furhat.say("Button 1 just pressed")
+    onButton("Sure!") {
+        furhat.say("Great")
+
+        goto(Ingredients)
     }
 
     onResponse<Yes> {
@@ -26,8 +29,74 @@ val Start = state(Interaction) {
 }
 
 val Ingredients = state(Interaction) {
+    val mentionedIngredients = ArrayList<String>()
+
     onEntry {
         furhat.say("What ingredients do I need?")
+    }
+
+    onButton("Oil") {
+        furhat.say("Mmm... Oil. I got it")
+
+        mentionedIngredients.add("oil")
+    }
+
+    onButton("Dough") {
+        furhat.say("Mmm... dough. ok")
+
+        mentionedIngredients.add("dough")
+    }
+
+    onButton("Cornmeal") {
+        furhat.say("Mmm... then?")
+
+        mentionedIngredients.add("cornmeal")
+    }
+
+    onButton("Tomato sauce") {
+        furhat.say("Tomato sauce!")
+
+        mentionedIngredients.add("tomato sauce")
+    }
+
+    onButton("Mozzarella") {
+        furhat.say("Noted! Mozzarella")
+
+        mentionedIngredients.add("mozzarella")
+    }
+
+    onButton("Mushrooms") {
+        furhat.say("Ok")
+
+        mentionedIngredients.add("mushrooms")
+    }
+
+    onButton("Ham") {
+        furhat.say("I like it, cool")
+
+        mentionedIngredients.add("ham")
+    }
+
+    onButton("Little artichokes") {
+        furhat.say("Ok, Anything else?")
+
+        mentionedIngredients.add("little artichokes")
+    }
+
+    onButton("End Ingredients") {
+        furhat.say("Ok, I'll need:")
+        mentionedIngredients.forEach {
+            furhat.say(it)
+        }
+        furhat.say("It seems I have everything!")
+
+        goto(Actions)
+    }
+}
+
+val Actions = state(Interaction) {
+    onEntry {
+        furhat.say("What is the procedure?")
     }
 }
 

@@ -33,6 +33,13 @@ class Fruit : EnumEntity(stemming = true, speechRecPhrases = true) {
     }
 }
 
+class Ingredient : EnumEntity(stemming = true, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf("dough", "oil", "cornmeal", "tomato sauce", "mozzarella", "mushrooms", "ham", "little artichokes",
+            "pineapple")
+    }
+}
+
 class BuyFruit(var fruits : FruitList? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("@fruits", "I want @fruits", "I would like @fruits", "I want to buy @fruits")
