@@ -1,9 +1,6 @@
 package furhatos.app.pizzabaker.flow
 
-import furhatos.app.pizzabaker.nlu.*
-import furhatos.app.pizzabaker.order
 import furhatos.flow.kotlin.*
-import furhatos.nlu.ListEntity
 import furhatos.nlu.common.*
 
 val Start = state(Interaction) {
@@ -95,80 +92,65 @@ val Ingredients = state(Interaction) {
 }
 
 val Actions = state(Interaction) {
+    val mentionedActions = ArrayList<String>()
+
     onEntry {
         furhat.say("What is the procedure?")
     }
-}
 
-val Options = state(Interaction) {
-    onResponse<BuyFruit> {
-        val fruits = it.intent.fruits
-        if (fruits != null) {
-            goto(OrderReceived(fruits))
+    onButton("Take the dough") {
+        furhat.say("Ok, I have it")
+
+        mentionedActions.add("Take the dough")
+    }
+
+    onButton("Flatten dough") {
+        furhat.say("Ok, I have to flatten it.")
+
+        mentionedActions.add("Flatten dough ball, and stretch out into a round")
+    }
+
+    onButton("Add oil") {
+        furhat.say("I have this extra vergine oil. It should work")
+
+        mentionedActions.add("Brush dough top with olive oil")
+    }
+
+    onButton("Cornmeal on pizza peel") {
+        furhat.say("Oh ok... The cornmeal helps the pizza to move to the pizza stone. Then?")
+
+        mentionedActions.add("Sprinkle pizza peel with corn meal, put flattened dough on top")
+    }
+
+    onButton("Toppings") {
+        furhat.say("So, ok. Here I add all the ingredients")
+
+        mentionedActions.add("Spread with tomato sauce and sprinkle with toppings")
+    }
+
+    onButton("Cornmeal on pizza stone") {
+        furhat.say("Ok. Cornmeal on pizza stone")
+
+        mentionedActions.add("Sprinkle cornmeal on pizza stone, slide pizza onto pizza stone in oven")
+    }
+
+    onButton("Bake") {
+        furhat.say("Oh cool! So I assume we are at the end. Is it all?")
+    }
+
+    onButton("End") {
+        furhat.say("Cool! That's all! So, for baking pizza I have to:")
+
+        mentionedActions.forEach {
+            furhat.say(it)
         }
-        else {
-            propagate()
-        }
-    }
 
-    onResponse<RequestOptions> {
-        furhat.say("We have ${Fruit().optionsToText()}")
-        furhat.ask("Do you want some?")
-    }
-
-    onResponse<Yes> {
-        random(
-                { furhat.ask("What kind of fruit do you want?") },
-                { furhat.ask("What type of fruit?") }
-        )
+        goto(End)
     }
 }
 
-val TakingOrder = state(Options) {
+val End = state(Interaction) {
     onEntry {
-        random(
-                { furhat.ask("How about some fruits?") },
-                { furhat.ask("Do you want some fruits?") }
-        )
-    }
-
-    onResponse<No> {
-        furhat.say("Okay, that's a shame. Have a splendid day!")
-        goto(Idle)
-    }
-}
-
-fun OrderReceived(fruits: FruitList) : State = state(Options) {
-    onEntry {
-        furhat.say("${fruits.text}, what a lovely choice!")
-        fruits.list.forEach {
-            users.current.order.fruits.list.add(it)
-        }
-        furhat.ask("Anything else?")
-    }
-
-    onReentry {
-        furhat.ask("Did you want something else?")
-    }
-
-    onResponse<No> {
-        furhat.say("Okay, here is your order of ${users.current.order.fruits}.")
-        goto(Confirmation)
-    }
-}
-
-val Confirmation = state(Interaction) {
-    onEntry {
-        furhat.ask("Do you want to confirm your order?")
-    }
-
-    onResponse<Yes> {
-        furhat.say("Okay, here is your order of ${users.current.order.fruits}.")
-        users.current.order.fruits = FruitList()
-    }
-
-    onResponse<No> {
-        furhat.say("Ok, I'll delete it. Come back if you want to order something else!")
-        users.current.order.fruits = FruitList()
+        furhat.say("Amazing. Thank you very much for teaching me how to cook pizza! Super cool. See you!")
     }
 }
