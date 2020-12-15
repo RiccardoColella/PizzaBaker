@@ -1,6 +1,7 @@
 package furhatos.app.pizzabaker.flow
 
 import furhatos.flow.kotlin.*
+import furhatos.gestures.Gestures
 import furhatos.util.*
 
 val Idle: State = state {
@@ -19,6 +20,8 @@ val Idle: State = state {
 
     onUserEnter {
         furhat.attend(it)
+        furhat.gesture(Gestures.Smile) // Do a smile
+
         goto(Start)
     }
 }
@@ -48,15 +51,23 @@ val Interaction: State = state {
                 { furhat.say("Sorry, I didn't get it")},
                 { furhat.say("Pardon?")}
         )
+        furhat.gesture(Gestures.BrowFrown)
+        furhat.gesture(Gestures.Thoughtful)
     }
 
     onButton("Understood. Then?") {
         random(
-                { furhat.say("Ok, got it. Then?") },
-                { furhat.say("Great. What's next?") },
-                { furhat.say("Mmm. Ok...")},
-                { furhat.say("I'm writing it. What's the following step?")}
+                { furhat.say("Ok, got it.") },
+                { furhat.say("Great.") },
+                { furhat.say("I'm writing it.")}
         )
+        furhat.gesture(Gestures.Nod)
+        random(
+                { furhat.ask("Then?") },
+                { furhat.ask("What's next") },
+                { furhat.ask("What's the following step?") }
+
+            )
     }
 
 

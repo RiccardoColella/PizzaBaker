@@ -1,6 +1,7 @@
 package furhatos.app.pizzabaker.flow
 
 import furhatos.flow.kotlin.*
+import furhatos.gestures.Gestures
 import furhatos.nlu.common.*
 
 val Start = state(Interaction) {
@@ -9,17 +10,17 @@ val Start = state(Interaction) {
                 {   furhat.say("Hi there") },
                 {   furhat.say("Oh, hello there") }
         )
+        furhat.gesture(Gestures.BigSmile)
         furhat.say("Can you teach me how to cook Pizza?")
     }
 
     onButton("Sure!") {
-        furhat.say("Great")
-
-        goto(Ingredients)
+        furhat.say("Great. What pizza are you gonna teach me?")
+        furhat.gesture(Gestures.BigSmile)
     }
 
-    onResponse<Yes> {
-        furhat.say("Great!" )
+    onButton("Go To Ingredients") {
+        furhat.say("Ok!")
 
         goto(Ingredients)
     }
@@ -38,6 +39,12 @@ val Ingredients = state(Interaction) {
         mentionedIngredients.add("oil")
     }
 
+    onButton("Oregano") {
+        furhat.say("Mmm... Oregano. I got it")
+
+        mentionedIngredients.add("dried oregano")
+    }
+
     onButton("Dough") {
         furhat.say("Mmm... dough. ok")
 
@@ -48,6 +55,12 @@ val Ingredients = state(Interaction) {
         furhat.say("Mmm... then?")
 
         mentionedIngredients.add("cornmeal")
+    }
+
+    onButton("Flour") {
+        furhat.say("Mmm... then?")
+
+        mentionedIngredients.add("flour")
     }
 
     onButton("Tomato sauce") {
@@ -63,15 +76,25 @@ val Ingredients = state(Interaction) {
     }
 
     onButton("Mushrooms") {
-        furhat.say("Ok")
+        furhat.say("Ok, mushrooms.")
 
         mentionedIngredients.add("mushrooms")
     }
 
     onButton("Ham") {
-        furhat.say("I like it, cool")
+        furhat.say("I like it, cool.")
+        furhat.say("Something else?")
 
         mentionedIngredients.add("ham")
+        furhat.gesture(Gestures.BrowRaise)
+    }
+
+    onButton("Pineapple") {
+        furhat.say("That's weird, cool.")
+        furhat.say("Something else?")
+
+        mentionedIngredients.add("pineapple")
+        furhat.gesture(Gestures.BrowRaise)
     }
 
     onButton("Little artichokes") {
@@ -86,7 +109,20 @@ val Ingredients = state(Interaction) {
             furhat.say(it)
         }
         furhat.say("It seems I have everything!")
+        furhat.say("Did you forget anything?")
+        furhat.gesture(Gestures.BrowRaise)
+    }
 
+    onButton("Repeat List") {
+        furhat.say("The ingredients that I noted are:")
+        mentionedIngredients.forEach {
+            furhat.say(it)
+        }
+        furhat.say("Do I need anything else?")
+        furhat.gesture(Gestures.BrowRaise)
+    }
+
+    onButton("Go To Actions") {
         goto(Actions)
     }
 }
@@ -107,7 +143,7 @@ val Actions = state(Interaction) {
     onButton("Flatten dough") {
         furhat.say("Ok, I have to flatten it.")
 
-        mentionedActions.add("Flatten dough ball, and stretch out into a round")
+        mentionedActions.add("Flatten dough ball, and stretch out into a circle")
     }
 
     onButton("Add oil") {
@@ -116,16 +152,22 @@ val Actions = state(Interaction) {
         mentionedActions.add("Brush dough top with olive oil")
     }
 
-    onButton("Cornmeal on pizza peel") {
-        furhat.say("Oh ok... The cornmeal helps the pizza to move to the pizza stone. Then?")
+    onButton("Flour on pizza peel") {
+        furhat.say("Oh ok... The four helps the pizza to move to the pizza stone. Then?")
 
-        mentionedActions.add("Sprinkle pizza peel with corn meal, put flattened dough on top")
+        mentionedActions.add("Sprinkle baking tray with flour, put flattened dough on top")
     }
 
     onButton("Toppings") {
         furhat.say("So, ok. Here I add all the ingredients")
 
-        mentionedActions.add("Spread with tomato sauce and sprinkle with toppings")
+        mentionedActions.add("Spread the tomato sauce evenly on the pizza and sprinkle with toppings")
+    }
+
+    onButton("Oregano") {
+        furhat.say("Ok, now I can add the oregano. Got it.")
+
+        mentionedActions.add("Sprinkle dried oregano on the pizza")
     }
 
     onButton("Cornmeal on pizza stone") {
@@ -134,8 +176,28 @@ val Actions = state(Interaction) {
         mentionedActions.add("Sprinkle cornmeal on pizza stone, slide pizza onto pizza stone in oven")
     }
 
-    onButton("Bake") {
-        furhat.say("Oh cool! So I assume we are at the end. Is it all?")
+    onButton("Bake 7min-350deg") {
+        furhat.say("Oh cool! So I assume we are at the end.")
+        furhat.say("Is it all?")
+        furhat.gesture(Gestures.BrowRaise)
+
+        mentionedActions.add("Bake the pizza in the oven for 7 minutes in 350 degrees Celsius")
+    }
+
+    onButton("Bake 5min-400deg") {
+        furhat.say("Oh cool! So I assume we are at the end.")
+        furhat.say("Is it all?")
+        furhat.gesture(Gestures.BrowRaise)
+
+        mentionedActions.add("Bake the pizza in the oven for 5 minutes in 400 degrees Celsius")
+    }
+
+    onButton("Unknown Ingredients") {
+        furhat.say("I don't have that ingredient.")
+        furhat.gesture(Gestures.Shake)
+
+        furhat.say("Do I need to add it to the list of ingredients?")
+
     }
 
     onButton("End") {
