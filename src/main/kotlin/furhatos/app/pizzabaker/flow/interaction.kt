@@ -14,12 +14,12 @@ val Start = state(Interaction) {
         furhat.say("Can you teach me how to cook Pizza?")
     }
 
-    onButton("Sure!") {
-        furhat.say("Great. What pizza are you gonna teach me?")
+    onButton("Ask what pizza") {
         furhat.gesture(Gestures.BigSmile)
+        furhat.say("Great. What pizza are you gonna teach me?")
     }
 
-    onButton("Go To Ingredients") {
+    onButton("Pizza type received. goto Ingredients") {
         furhat.say("Ok!")
 
         goto(Ingredients)
@@ -28,89 +28,110 @@ val Start = state(Interaction) {
 
 val Ingredients = state(Interaction) {
     val mentionedIngredients = ArrayList<String>()
+    
+    fun addToIngredients(ingredient : String) {
+        if (!mentionedIngredients.contains(ingredient)) {
+            mentionedIngredients.add(ingredient)
+        }
+    }
 
     onEntry {
         furhat.say("What ingredients do I need?")
     }
 
+    onButton("Dough") {
+        furhat.gesture(Gestures.Nod)
+        furhat.say("Mmm... dough. ok")
+
+        addToIngredients("dough")
+    }
+
     onButton("Oil") {
+        furhat.gesture(Gestures.Nod)
         furhat.say("Mmm... Oil. I got it")
 
-        mentionedIngredients.add("oil")
+        addToIngredients("oil")
     }
 
     onButton("Oregano") {
+        furhat.gesture(Gestures.Blink)
         furhat.say("Mmm... Oregano. I got it")
 
-        mentionedIngredients.add("dried oregano")
+        addToIngredients("dried oregano")
+        furhat.gesture(Gestures.GazeAway)
     }
 
-    onButton("Dough") {
-        furhat.say("Mmm... dough. ok")
+    onButton("Flour") {
+        furhat.say("Mmm... Ok, flour. Then?")
 
-        mentionedIngredients.add("dough")
+        addToIngredients("flour")
+        furhat.gesture(Gestures.BigSmile)
     }
 
     onButton("Cornmeal") {
         furhat.say("Mmm... then?")
 
-        mentionedIngredients.add("cornmeal")
-    }
-
-    onButton("Flour") {
-        furhat.say("Mmm... then?")
-
-        mentionedIngredients.add("flour")
+        addToIngredients("cornmeal")
+        furhat.gesture(Gestures.Smile)
     }
 
     onButton("Tomato sauce") {
+        furhat.gesture(Gestures.Nod)
         furhat.say("Tomato sauce!")
 
-        mentionedIngredients.add("tomato sauce")
+        addToIngredients("tomato sauce")
+        furhat.gesture(Gestures.BrowRaise)
     }
 
     onButton("Mozzarella") {
+        furhat.gesture(Gestures.GazeAway)
         furhat.say("Noted! Mozzarella")
 
-        mentionedIngredients.add("mozzarella")
+        addToIngredients("mozzarella")
+        furhat.gesture(Gestures.BigSmile)
     }
 
     onButton("Mushrooms") {
+        furhat.gesture(Gestures.Nod)
         furhat.say("Ok, mushrooms.")
 
-        mentionedIngredients.add("mushrooms")
+        addToIngredients("mushrooms")
+    }
+
+    onButton("Little artichokes") {
+        furhat.gesture(Gestures.ExpressDisgust)
+        furhat.say("Ok, Anything else?")
+
+        addToIngredients("little artichokes")
+        furhat.gesture(Gestures.BrowRaise)
     }
 
     onButton("Ham") {
         furhat.say("I like it, cool.")
         furhat.say("Something else?")
 
-        mentionedIngredients.add("ham")
+        addToIngredients("ham")
         furhat.gesture(Gestures.BrowRaise)
     }
 
     onButton("Pineapple") {
+        furhat.gesture(Gestures.ExpressDisgust)
         furhat.say("That's weird, cool.")
+        furhat.gesture(Gestures.Oh)
         furhat.say("Something else?")
 
-        mentionedIngredients.add("pineapple")
-        furhat.gesture(Gestures.BrowRaise)
-    }
-
-    onButton("Little artichokes") {
-        furhat.say("Ok, Anything else?")
-
-        mentionedIngredients.add("little artichokes")
+        addToIngredients("pineapple")
     }
 
     onButton("End Ingredients") {
+        furhat.gesture(Gestures.BigSmile)
         furhat.say("Ok, I'll need:")
         mentionedIngredients.forEach {
             furhat.say(it)
         }
         furhat.say("It seems I have everything!")
         furhat.say("Did you forget anything?")
-        furhat.gesture(Gestures.BrowRaise)
+        furhat.gesture(Gestures.BigSmile)
     }
 
     onButton("Repeat List") {
@@ -134,13 +155,15 @@ val Actions = state(Interaction) {
         furhat.say("What is the procedure?")
     }
 
-    onButton("Take the dough") {
+    onButton("Take the dough and make a ball") {
+        furhat.gesture(Gestures.BigSmile)
         furhat.say("Ok, I have it")
 
-        mentionedActions.add("Take the dough")
+        mentionedActions.add("Take the dough and make a round ball.")
     }
 
     onButton("Flatten dough") {
+        furhat.gesture(Gestures.Nod)
         furhat.say("Ok, I have to flatten it.")
 
         mentionedActions.add("Flatten dough ball, and stretch out into a circle")
@@ -152,8 +175,8 @@ val Actions = state(Interaction) {
         mentionedActions.add("Brush dough top with olive oil")
     }
 
-    onButton("Flour on pizza peel") {
-        furhat.say("Oh ok... The four helps the pizza to move to the pizza stone. Then?")
+    onButton("Flour and dough on baking tray") {
+        furhat.say("Oh ok... The flour helps the pizza to move from the baking tray. Then?")
 
         mentionedActions.add("Sprinkle baking tray with flour, put flattened dough on top")
     }
@@ -176,20 +199,20 @@ val Actions = state(Interaction) {
         mentionedActions.add("Sprinkle cornmeal on pizza stone, slide pizza onto pizza stone in oven")
     }
 
-    onButton("Bake 7min-350deg") {
+    onButton("Bake 7min-300deg") {
         furhat.say("Oh cool! So I assume we are at the end.")
         furhat.say("Is it all?")
         furhat.gesture(Gestures.BrowRaise)
 
-        mentionedActions.add("Bake the pizza in the oven for 7 minutes in 350 degrees Celsius")
+        mentionedActions.add("Bake the pizza in the oven for 7 minutes in 300 degrees Celsius")
     }
 
-    onButton("Bake 5min-400deg") {
+    onButton("Bake 12min-250deg") {
         furhat.say("Oh cool! So I assume we are at the end.")
         furhat.say("Is it all?")
         furhat.gesture(Gestures.BrowRaise)
 
-        mentionedActions.add("Bake the pizza in the oven for 5 minutes in 400 degrees Celsius")
+        mentionedActions.add("Bake the pizza in the oven for 12 minutes in 250 degrees Celsius")
     }
 
     onButton("Unknown Ingredients") {
